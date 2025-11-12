@@ -1,0 +1,17 @@
+[project]
+name = "sigdep"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Majid alDosari", email = "majidaldosari-github@yahoo.com" }
+]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+sigdep = "sigdep:main"
+
+[build-system]
+requires = ["uv_build>=0.9.7,<0.10.0"]
+build-backend = "uv_build"
