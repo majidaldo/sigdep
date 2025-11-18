@@ -1,4 +1,3 @@
-
 from typing import Any
 
 
@@ -29,27 +28,42 @@ def sig(obj: Any):
             arg = Parameter(pn, k, default=d, annotation=a)
             params.append(arg)
 
-    from inspect import Signature
     sig = Signature(params)
     return sig
 
 
+from inspect import Signature
+def redefine(f: callable, sig: Signature):
+    f.__signature__ = sig
+    return f
+
+def decorator(obj):
+    def f(_f):
+        return redefine(_f, sig(obj))
+    return f
+def my_decorator(func):
+    def wrapper(*args, **kwargs):
+        print("Something is happening before the function is called.")
+        result = func(*args, **kwargs)
+        print("Something is happening after the function is called.")
+        return result
+    return wrapper
+
+
 
 def test(): 
-    def f(x, y):...
-
     class Obj:
-
-
         @property
         def p(self) -> int: return ...  #
-
         _star_ = ''
-
         @property
         def z(self): return 'z'
         @property
         def a(self): return 'a'
+    
+    @decorator(Obj())
+    def f(x, y): ...
+    return f
 
     _ = Obj()
     _ = sig(_)
