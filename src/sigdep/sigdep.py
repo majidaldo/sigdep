@@ -34,20 +34,63 @@ def sig(obj: Any):
 
 from inspect import Signature
 def redefine(f: callable, sig: Signature):
-    f.__signature__ = sig
-    return f
+    name = f.__name__
+    fs = f"def {name}{sig}:\n"
+    body = get_function_body(f)
+    body = (' '*4+l for l in body.split('\n'))
+    body = '\n'.join(body)
+    fs = (fs
+        + ((' '*4+'"'*3+f.__doc__+'"'*3+'\n') if f.__doc__ else '')
+        + body)
+    fl = {}
+    exec(fs, locals=fl)
+    return fl[name]
+
+
+def my_function(arg1, arg2):
+    """This is a docstring."""
+    x = arg1 + arg2
+    y = x * 2
+    return y
+
+def get_function_body(func):
+    import inspect
+    source_lines = inspect.getsource(func).splitlines()
+    
+    # Find the start of the function body (after the 'def' line and potential docstring)
+    start_index = 0
+    for i, line in enumerate(source_lines):
+        if line.strip().startswith("def "):
+            start_index = i
+            break
+    
+    # If a docstring exists, find its end
+    if func.__doc__:
+        docstring_lines = func.__doc__.splitlines()
+        docstring_end_line_content = docstring_lines[-1] if docstring_lines else ""
+        
+        for i in range(start_index + 1, len(source_lines)):
+            if docstring_end_line_content in source_lines[i] and source_lines[i].strip().endswith('"""'):
+                start_index = i
+                break
+    
+    # The body starts after the definition line and optional docstring
+    body_lines = source_lines[start_index + 1:]
+    
+    # Dedent the body to remove the function's indentation level
+    if body_lines:
+        first_line_indentation = len(body_lines[0]) - len(body_lines[0].lstrip())
+        dedented_body = [line[first_line_indentation:] for line in body_lines]
+        return "\n".join(dedented_body)
+    else:
+        return ""
+
+
 
 def decorator(obj):
     def f(_f):
         return redefine(_f, sig(obj))
     return f
-def my_decorator(func):
-    def wrapper(*args, **kwargs):
-        print("Something is happening before the function is called.")
-        result = func(*args, **kwargs)
-        print("Something is happening after the function is called.")
-        return result
-    return wrapper
 
 
 
@@ -62,7 +105,14 @@ def test():
         def a(self): return 'a'
     
     @decorator(Obj())
-    def f(x, y): ...
+    def f(x, y):
+        """sdfsdf
+        """
+        x, y
+        x,y
+        def inner():
+            jj
+        ...
     return f
 
     _ = Obj()
