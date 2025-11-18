@@ -1,13 +1,9 @@
 
 from typing import Any
 
-# obj 2 sig: all params in obj become params in sig
-# default values put into obj init
-
 
 def sig(obj: Any):
-    from inspect import signature
-    from inspect import Signature, Parameter
+    from inspect import signature, Parameter
     params = []
 
     star = '_star_'
@@ -32,10 +28,11 @@ def sig(obj: Any):
             a = signature(cp.fget).return_annotation
             arg = Parameter(pn, k, default=d, annotation=a)
             params.append(arg)
-    return params
 
-#def mod(sig: Signature, obj: Any):
-    #for p in sig.parameters:...
+    from inspect import Signature
+    sig = Signature(params)
+    return sig
+
 
 
 def test(): 
@@ -45,7 +42,7 @@ def test():
 
 
         @property
-        def p(self) -> int: ...  #
+        def p(self) -> int: return ...  #
 
         _star_ = ''
 
