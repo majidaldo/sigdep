@@ -1,0 +1,1 @@
+from .sigdep import decorator as paramize

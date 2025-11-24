@@ -6,9 +6,10 @@ def sig(obj: Any):
     params = []
 
     star = '_star_'
+    kw_only = False
     for pn, cp in vars(obj.__class__).items():
         # property name , class property
-        kw_only = True if pn==star else False # expected only once
+        if pn == star: kw_only = True # expected only once
         
         if isinstance(cp, property): # props will be taken as args
             if kw_only:
@@ -47,11 +48,6 @@ def redefine(f: callable, sig: Signature):
     return fl[name]
 
 
-def my_function(arg1, arg2):
-    """This is a docstring."""
-    x = arg1 + arg2
-    y = x * 2
-    return y
 
 def get_function_body(func):
     import inspect
@@ -88,47 +84,18 @@ def get_function_body(func):
 
 
 def decorator(obj):
+    """
+    Takes an object's `property` attributes to be used as function arguments as follows:
+    - Function argument order will match the order in which the object properties are defined.
+    - Property return values are taken as default values. Ellipsis, `...`, indicates no default value.
+
+
+    """
     def f(_f):
         return redefine(_f, sig(obj))
     return f
 
 
 
-def test(): 
-    class Obj:
-        @property
-        def p(self) -> int: return ...  #
-        _star_ = ''
-        @property
-        def z(self): return 'z'
-        @property
-        def a(self): return 'a'
-    
-    @decorator(Obj())
-    def f(x, y):
-        """sdfsdf
-        """
-        x, y
-        x,y
-        def inner():
-            jj
-        ...
-    return f
-
-    _ = Obj()
-    _ = sig(_)
-    return _
 
 
-def _test():
-    import inspect
-    def my_function(a, b=10, *, c, **kwargs):
-        pass
-    sig = inspect.signature(my_function)
-    for name, param in sig.parameters.items():
-        print(f"Parameter '{name}': Kind = {param.kind}, Default = {param.default if param.default is not inspect.Parameter.empty else 'No Default'}")
-    # Output:
-    # Parameter 'a': Kind = POSITIONAL_OR_KEYWORD, Default = No Default
-    # Parameter 'b': Kind = POSITIONAL_OR_KEYWORD, Default = 10
-    # Parameter 'c': Kind = KEYWORD_ONLY, Default = No Default
-    # Parameter 'kwargs': Kind = VAR_KEYWORD, Default = No Default
