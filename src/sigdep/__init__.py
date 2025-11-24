@@ -1,1 +1,1 @@
-from .sigdep import decorator as paramize
+from .sigdep import (decorator as paramize, var_property)

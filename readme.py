@@ -16,7 +16,8 @@ def _(mo):
     #Sigdep
 
     ## Why?
-    ...to programmatically encode relationships between function arguments.
+    To programmatically encode relationships between function arguments.
+    Other benefits follow from treating parameters as object properties such as documentation.
     ## How?
     Use objects for encoding relationships between arguments.
     Use a decorator to dynamically create a function.
@@ -26,33 +27,41 @@ def _(mo):
 
 @app.cell
 def _():
-    from sigdep import paramize
-    paramize
-    return (paramize,)
+    from sigdep import paramize, var_property
+    help(paramize)
+    return paramize, var_property
 
 
 @app.cell
-def _(paramize):
+def _(paramize, var_property):
     class Params:
         @property
         def p(self) -> int: return ...  # '...' to in
         _star_ = ''
         @property
-        def z(self): return 'z'
+        def z(self) -> str: return 'z'
         @property
         def a(self): return 'a'
-        @property
-        def k(self): return 'k'
+        @var_property
+        def k(self): return ...
 
+    class Params1:
+        @var_property
+        def l(self): return ...#[]
     
+    @paramize(Params1())
+    def f1():
+        """f1"""
+        return
+
     @paramize(Params())
-    def f(*, x, y):
+    def f():
         """sdfsdf"""
         return
 
     #from inspect import signature as sig
     #sig(f).parameters['p'].kind
-    f#(3)
+    (f1,f)#(3)
     return
 
 

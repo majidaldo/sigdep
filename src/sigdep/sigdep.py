@@ -1,24 +1,29 @@
 from typing import Any
 
+class var_property(property): ...
 
 def sig(obj: Any):
     from inspect import signature, Parameter
     params = []
-
     star = '_star_'
     kw_only = False
+
+
+    def is_var_property(p):
+        return isinstance(cp, var_property) # why isn't it this?!
+
     for pn, cp in vars(obj.__class__).items():
         # property name , class property
         if pn == star: kw_only = True # expected only once
         
         if isinstance(cp, property): # props will be taken as args
             if kw_only:
-                if pn.startswith(star):
+                if isinstance(cp, var_property):
                     k = Parameter.VAR_KEYWORD
                 else:
                     k = Parameter.KEYWORD_ONLY
             else:
-                if pn.startswith(star):
+                if isinstance(cp, var_property):
                     k = Parameter.VAR_POSITIONAL
                 else:
                     k = Parameter.POSITIONAL_OR_KEYWORD
@@ -26,6 +31,7 @@ def sig(obj: Any):
             r = getattr(obj, pn)
             d = Parameter.empty if (r == ...) else r
             a = signature(cp.fget).return_annotation
+            pn = pn.split(star)[1] if pn.startswith(star) else pn
             arg = Parameter(pn, k, default=d, annotation=a)
             params.append(arg)
 
@@ -88,8 +94,9 @@ def decorator(obj):
     Takes an object's `property` attributes to be used as function arguments as follows:
     - Function argument order will match the order in which the object properties are defined.
     - Property return values are taken as default values. Ellipsis, `...`, indicates no default value.
-
-
+    - Property return types are used as parameter types.
+    - Use the special property name '_star_' to mark keyword-only arguments.
+    - Use `var_property` to mean a variable length argument.
     """
     def f(_f):
         return redefine(_f, sig(obj))
