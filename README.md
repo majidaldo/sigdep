@@ -1,5 +1,7 @@
 # obj2sig
 
+Use Python objects to define function signatures.
+
 ## Why?
 To programmatically encode relationships between function arguments.
 Other benefits follow from treating parameters as object properties such as documentation.
