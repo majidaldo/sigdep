@@ -1,5 +1,5 @@
 [project]
-name = "sigdep"
+name = "obj2sig"
 dynamic = ["version"]
 description = "Function Signature Dependencies"
 readme = "README.md"
@@ -18,4 +18,4 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 [tool.hatch.version]
-path = "src/sigdep/__init__.py"
+path = "src/obj2sig/__init__.py"

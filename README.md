@@ -1,4 +1,4 @@
-# Sigdep
+# obj2sig
 
 ## Why?
 To programmatically encode relationships between function arguments.
@@ -8,7 +8,7 @@ Use objects for encoding relationships between arguments.
 Use a decorator to dynamically create a function.
 
 ```python {.marimo}
-from sigdep import paramize, var_property
+from obj2sig import paramize, var_property
 help(paramize)
 ```
 

@@ -1,6 +1,5 @@
-from tomllib import load
 from pathlib import Path
-pkg = 'sigdep'
+pkg = 'obj2sig'
 
 
 from subprocess import CalledProcessError
@@ -48,7 +47,7 @@ def ncommits(rev=rev):
     return int(c)
 
 def chk_ver():
-    from sigdep import __version__ as v
+    from obj2sig import __version__ as v
     return str(v) == str(ver())
 
 

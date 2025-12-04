@@ -15,7 +15,7 @@ wheels = [
 ]
 
 [[package]]
-name = "sigdep"
+name = "obj2sig"
 source = { editable = "." }
 
 [package.dev-dependencies]
